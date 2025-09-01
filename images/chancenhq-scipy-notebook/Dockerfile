@@ -89,6 +89,9 @@ RUN rm -rf "/home/${NB_USER}/.cache/"
 
 ADD env.yml .
 RUN conda env create -f env.yml
+RUN source activate chancenintenv
+RUN conda install ipykernel
+RUN python -m ipykernel install --user --name="chancenintenv"
 
 USER ${NB_UID}
 
