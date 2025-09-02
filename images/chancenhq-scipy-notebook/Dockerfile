@@ -88,10 +88,16 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
 RUN rm -rf "/home/${NB_USER}/.cache/"
 
 ADD env.yml .
-RUN conda env create -f env.yml
-RUN source activate chancenintenv
-RUN conda install ipykernel
-RUN python -m ipykernel install --user --name="chancenintenv"
+RUN mamba create -y -n chancenintenv -f env.yml \
+ && mamba clean -y --all
+
+USER root
+
+RUN source /opt/conda/etc/profile.d/mamba.sh \
+ && mamba run -n chancenintenv python -m ipykernel install \
+      --prefix=/usr/local \
+      --name=chancenintenv \
+      --display-name="chancenintenv"
 
 USER ${NB_UID}
 
